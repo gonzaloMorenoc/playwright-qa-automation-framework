@@ -1,0 +1,100 @@
+{
+    "name": "playwright-qa-automation-framework",
+    "version": "2.0.0",
+    "description": "Professional End-to-End Testing Framework built with Playwright - Enterprise-grade QA automation showcasing advanced testing practices",
+    "main": "index.js",
+    "scripts": {
+      "test": "npx playwright test",
+      "test:dev": "npx playwright test --config=configs/environments/dev.config.js",
+      "test:staging": "npx playwright test --config=configs/environments/staging.config.js",
+      "test:prod": "npx playwright test --config=configs/environments/prod.config.js",
+      "test:chromium": "npx playwright test --config=configs/browsers/chromium.config.js",
+      "test:firefox": "npx playwright test --config=configs/browsers/firefox.config.js",
+      "test:webkit": "npx playwright test --config=configs/browsers/webkit.config.js",
+      "test:headed": "npx playwright test --headed",
+      "test:debug": "npx playwright test --debug",
+      "test:ui": "npx playwright test --ui",
+      "test:api": "npx playwright test tests/api/",
+      "test:e2e": "npx playwright test tests/e2e/",
+      "test:performance": "npx playwright test tests/performance/",
+      "test:security": "npx playwright test tests/security/",
+      "test:visual": "npx playwright test tests/visual/",
+      "test:smoke": "npx playwright test --grep @smoke",
+      "test:regression": "npx playwright test --grep @regression",
+      "test:parallel": "npx playwright test --workers=4",
+      "test:report": "npx playwright show-report",
+      "test:allure": "allure generate allure-results --clean && allure open",
+      "test:trace": "npx playwright show-trace",
+      "install:browsers": "npx playwright install",
+      "install:deps": "npx playwright install-deps",
+      "lint": "eslint src/ tests/ --ext .js",
+      "lint:fix": "eslint src/ tests/ --ext .js --fix",
+      "format": "prettier --write src/ tests/ configs/",
+      "format:check": "prettier --check src/ tests/ configs/",
+      "docker:build": "docker build -f docker/Dockerfile -t playwright-qa .",
+      "docker:run": "docker-compose -f docker/docker-compose.yml up",
+      "setup": "npm install && npm run install:browsers",
+      "clean": "rm -rf test-results/ reports/ allure-results/ allure-report/",
+      "precommit": "npm run lint && npm run format:check",
+      "performance:analyze": "node scripts/performance-analyzer.js",
+      "security:scan": "node scripts/security-scanner.js"
+    },
+    "keywords": [
+      "playwright",
+      "automation",
+      "testing",
+      "qa",
+      "e2e",
+      "api-testing",
+      "performance-testing",
+      "security-testing",
+      "visual-testing",
+      "javascript",
+      "framework",
+      "enterprise",
+      "ci-cd",
+      "docker"
+    ],
+    "author": {
+      "name": "Your Name",
+      "email": "your.email@example.com",
+      "url": "https://your-portfolio.com"
+    },
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/yourusername/playwright-qa-automation-framework"
+    },
+    "engines": {
+      "node": ">=16.0.0",
+      "npm": ">=8.0.0"
+    },
+    "devDependencies": {
+      "@playwright/test": "^1.40.0",
+      "dotenv": "^16.3.1",
+      "allure-playwright": "^2.10.0",
+      "eslint": "^8.50.0",
+      "prettier": "^3.0.3",
+      "husky": "^8.0.3",
+      "lint-staged": "^15.0.2"
+    },
+    "dependencies": {
+      "faker": "^5.5.3",
+      "moment": "^2.29.4",
+      "axios": "^1.5.0",
+      "lodash": "^4.17.21",
+      "mysql2": "^3.6.0",
+      "nodemailer": "^6.9.5",
+      "sharp": "^0.32.6",
+      "csv-parser": "^3.0.0",
+      "jsonwebtoken": "^9.0.2"
+    },
+    "husky": {
+      "hooks": {
+        "pre-commit": "lint-staged"
+      }
+    },
+    "lint-staged": {
+      "*.js": ["eslint --fix", "prettier --write"]
+    }
+  }
