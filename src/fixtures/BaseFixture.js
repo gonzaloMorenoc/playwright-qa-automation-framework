@@ -1,4 +1,4 @@
-const { test as base, expect } = require('@playwright/test');
+import { test as base, expect } from '@playwright/test';
 
 const test = base.extend({
   baseURL: async ({}, use) => {
@@ -7,9 +7,9 @@ const test = base.extend({
   },
   
   testData: async ({}, use) => {
-    const testData = require('../test-data/users/valid-users.json');
-    await use(testData);
+    const testData = await import('../test-data/users/valid-users.json', { assert: { type: 'json' } });
+    await use(testData.default);
   },
 });
 
-module.exports = { test, expect };
+export { test, expect };
