@@ -37,7 +37,13 @@
       "clean": "rm -rf test-results/ reports/ allure-results/ allure-report/",
       "precommit": "npm run lint && npm run format:check",
       "performance:analyze": "node scripts/performance-analyzer.js",
-      "security:scan": "node scripts/security-scanner.js"
+      "security:scan": "node scripts/security-scanner.js",
+      "test:register": "npx playwright test tests/e2e/auth/register.spec.js --config=configs/environments/test.config.js",
+      "test:register:simple": "npx playwright test tests/e2e/auth/register-simple.spec.js --config=configs/environments/test.config.js",
+      "test:auth": "npx playwright test tests/e2e/auth/ --config=configs/environments/test.config.js",
+      "test:register:headed": "npx playwright test tests/e2e/auth/register.spec.js --config=configs/environments/test.config.js --headed",
+      "test:register:debug": "npx playwright test tests/e2e/auth/register.spec.js --config=configs/environments/test.config.js --debug"
+
     },
     "keywords": [
       "playwright",

@@ -5,7 +5,23 @@ class BasePage {
     }
   
     async navigate(url) {
-      await this.page.goto(url);
+      // Handle both absolute and relative URLs
+      let targetUrl = url;
+      
+      // If URL doesn't start with http/https, check if we have a baseURL configured
+      if (!url.startsWith('http')) {
+        const baseURL = this.page.context()._options.baseURL;
+        if (baseURL) {
+          // Use the configured baseURL
+          targetUrl = `${baseURL.replace(/\/$/, '')}${url}`;
+        } else {
+          // Fallback to production URL
+          targetUrl = `https://wordmate.es${url}`;
+        }
+      }
+      
+      console.log(`Navigating to: ${targetUrl}`);
+      await this.page.goto(targetUrl);
       await this.page.waitForLoadState('networkidle');
     }
   
