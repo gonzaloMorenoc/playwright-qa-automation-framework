@@ -39,7 +39,7 @@ jobs:
     - name: 🔧 Setup Environment
       run: |
         cp .env.example .env
-        echo "BASE_URL=${{ secrets.BASE_URL_${{ matrix.environment }} }}" >> .env
+        echo "BASE_URL=${{ secrets[format('BASE_URL_{0}', matrix.environment)] }}" >> .env
         echo "API_KEY=${{ secrets.API_KEY }}" >> .env
         
     - name: 🧪 Run E2E Tests
