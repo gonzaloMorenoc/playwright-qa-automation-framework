@@ -49,7 +49,10 @@
       "test:game-session": "npx playwright test tests/e2e/game/",
       "test:game-session:smoke": "npx playwright test tests/e2e/game/game-session-smoke.spec.js",
       "test:game-session:scenarios": "npx playwright test tests/e2e/game/game-session-scenarios.spec.js",
-      "test:game-session:main": "npx playwright test tests/e2e/game/game-session.spec.js"
+      "test:game-session:main": "npx playwright test tests/e2e/game/game-session.spec.js",
+      "test:upload-vocabulary": "npx playwright test tests/e2e/vocabulary/upload-vocabulary.spec.js --config=configs/environments/test.config.js",
+      "test:upload-vocabulary:headed": "...",
+      "test:upload-vocabulary:debug": "..."
 
     },
     "keywords": [
