@@ -45,7 +45,12 @@
       "test:register:debug": "npx playwright test tests/e2e/auth/register.spec.js --config=configs/environments/test.config.js --debug",
       "test:login": "npx playwright test tests/e2e/auth/login.spec.js --config=configs/environments/test.config.js",
       "test:login:headed": "npx playwright test tests/e2e/auth/login.spec.js --config=configs/environments/test.config.js --headed",
-      "test:login:debug": "npx playwright test tests/e2e/auth/login.spec.js --config=configs/environments/test.config.js --debug"
+      "test:login:debug": "npx playwright test tests/e2e/auth/login.spec.js --config=configs/environments/test.config.js --debug",
+      "test:game-session": "npx playwright test tests/e2e/game/",
+      "test:game-session:smoke": "npx playwright test tests/e2e/game/game-session-smoke.spec.js",
+      "test:game-session:scenarios": "npx playwright test tests/e2e/game/game-session-scenarios.spec.js",
+      "test:game-session:main": "npx playwright test tests/e2e/game/game-session.spec.js"
+
     },
     "keywords": [
       "playwright",
