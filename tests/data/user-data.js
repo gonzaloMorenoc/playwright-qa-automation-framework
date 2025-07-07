@@ -13,10 +13,10 @@ const validPasswords = [
 ];
 
 const invalidPasswords = [
-  { password: '123456', expectedError: '8 characters' },
+  { password: '123456', expectedError: 'Password must have at least 8 chars, 1 uppercase, 1 lowercase, and 1 digit.' },
   { password: 'password', expectedError: 'uppercase' },
-  { password: 'PASSWORD123', expectedError: 'uppercase' },
-  { password: 'Pass123', expectedError: '8 characters' },
+  { password: 'PASSWORD123', expectedError: 'lowercase' },
+  { password: 'Pass123', expectedError: 'Password must have at least 8 chars, 1 uppercase, 1 lowercase, and 1 digit.' },
   { password: 'NoNumbers', expectedError: 'digit' },
   { password: 'nonumber', expectedError: 'uppercase' },
   { password: '12345678', expectedError: 'uppercase' },
@@ -61,6 +61,89 @@ const UserDataFactory = {
       password: 'MinPass123!',
       ...overrides
     };
+  },
+
+  /**
+   * Generate valid login credentials for existing user
+   */
+  createValidLoginCredentials: (overrides = {}) => {
+    return {
+      username: 'PlayTest',
+      password: 'PlayTest123',
+      ...overrides
+    };
+  },
+
+  /**
+   * Generate invalid login credentials for testing
+   */
+  createInvalidLoginCredentials: (type, overrides = {}) => {
+    const baseInvalid = {
+      username: 'invaliduser',
+      password: 'wrongpassword',
+      ...overrides
+    };
+
+    switch (type) {
+      case 'empty':
+        return { username: '', password: '' };
+      
+      case 'emptyUsername':
+        return { username: '', password: 'PlayTest123' };
+      
+      case 'emptyPassword':
+        return { username: 'PlayTest', password: '' };
+      
+      case 'wrongPassword':
+        return { username: 'PlayTest', password: 'wrongpassword' };
+      
+      case 'wrongUsername':
+        return { username: 'wronguser', password: 'PlayTest123' };
+      
+      case 'nonexistent':
+        return { username: 'nonexistentuser', password: 'nonexistentpass' };
+        
+      case 'caseIncorrect':
+        return { username: 'playtest', password: 'playtest123' };
+        
+      default:
+        return baseInvalid;
+    }
+  },
+
+  /**
+   * Generate credentials with special characters for security testing
+   */
+  createSecurityTestCredentials: (type, overrides = {}) => {
+    switch (type) {
+      case 'sql_injection':
+        return {
+          username: "' OR '1'='1",
+          password: "'; DROP TABLE users; --",
+          ...overrides
+        };
+      
+      case 'xss':
+        return {
+          username: '<script>alert("xss")</script>',
+          password: 'javascript:alert("xss")',
+          ...overrides
+        };
+      
+      case 'unicode':
+        return {
+          username: '用户名测试',
+          password: 'пароль123',
+          ...overrides
+        };
+        
+      default:
+        return {
+          username: 'securitytest',
+          password: 'security123',
+          ...overrides
+        };
+    }
   },
 
   /**
