@@ -19,6 +19,8 @@ test.describe('Wordmate Complete Smoke Tests @smoke', () => {
     loginPage = new LoginPage(page);
     registerPage = new RegisterPage(page);
     
+    await page.goto('/');
+    
     await page.evaluate(() => {
       localStorage.clear();
       sessionStorage.clear();
@@ -75,7 +77,7 @@ test.describe('Wordmate Complete Smoke Tests @smoke', () => {
       expect(await loginPage.isFormVisible()).toBeTruthy();
       expect(await page.locator('#login-username').isVisible()).toBeTruthy();
       expect(await page.locator('#login-password').isVisible()).toBeTruthy();
-      expect(await page.locator('#login-submit').isVisible()).toBeTruthy();
+      expect(await page.locator('text=Login').isVisible()).toBeTruthy();
     });
 
     test('Register page loads and form is functional', async ({ page }) => {
@@ -111,14 +113,14 @@ test.describe('Wordmate Complete Smoke Tests @smoke', () => {
       await page.goto('/public/custom-vocab.html');
       
       expect(await page.locator('h1, h2').first().isVisible()).toBeTruthy();
-      expect(await page.locator('.container').isVisible()).toBeTruthy();
+      expect(await page.locator('[data-testid="main-content"]').isVisible()).toBeTruthy();
     });
 
     test('Grammar page loads correctly', async ({ page }) => {
       await page.goto('/public/grammar.html');
       
       expect(await page.locator('h1, h2').first().isVisible()).toBeTruthy();
-      expect(await page.locator('.container').isVisible()).toBeTruthy();
+      expect(await page.locator('[data-testid="main-content"]').isVisible()).toBeTruthy();
     });
 
     test('Leaderboard page loads correctly', async ({ page }) => {
@@ -132,7 +134,7 @@ test.describe('Wordmate Complete Smoke Tests @smoke', () => {
       await page.goto('/public/my-words.html');
       
       expect(await page.locator('h1, h2').first().isVisible()).toBeTruthy();
-      expect(await page.locator('.container').isVisible()).toBeTruthy();
+      expect(await page.locator('[data-testid="main-content"]').isVisible()).toBeTruthy();
     });
   });
 
@@ -164,28 +166,28 @@ test.describe('Wordmate Complete Smoke Tests @smoke', () => {
       await page.goto('/public/about.html');
       
       expect(await page.locator('h1, h2').first().isVisible()).toBeTruthy();
-      expect(await page.locator('.container').isVisible()).toBeTruthy();
+      expect(await page.locator('[data-testid="main-content"]').isVisible()).toBeTruthy();
     });
 
     test('How It Works page loads correctly', async ({ page }) => {
       await page.goto('/public/how-it-works.html');
       
       expect(await page.locator('h1, h2').first().isVisible()).toBeTruthy();
-      expect(await page.locator('.container').isVisible()).toBeTruthy();
+      expect(await page.locator('[data-testid="main-content"]').isVisible()).toBeTruthy();
     });
 
     test('Learning Tips page loads correctly', async ({ page }) => {
       await page.goto('/public/learning-tips.html');
       
       expect(await page.locator('h1, h2').first().isVisible()).toBeTruthy();
-      expect(await page.locator('.container').isVisible()).toBeTruthy();
+      expect(await page.locator('[data-testid="main-content"]').isVisible()).toBeTruthy();
     });
 
     test('FAQ page loads correctly', async ({ page }) => {
       await page.goto('/public/faq.html');
       
       expect(await page.locator('h1, h2').first().isVisible()).toBeTruthy();
-      expect(await page.locator('.container').isVisible()).toBeTruthy();
+      expect(await page.locator('[data-testid="main-content"]').isVisible()).toBeTruthy();
     });
   });
 

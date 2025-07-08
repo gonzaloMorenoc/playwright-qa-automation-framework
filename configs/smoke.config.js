@@ -3,7 +3,7 @@ const baseConfig = require('./environments/base.config.js');
 
 module.exports = defineConfig({
   ...baseConfig,
-  testDir: '../../tests/smoke',
+  testDir: '../tests/smoke',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
