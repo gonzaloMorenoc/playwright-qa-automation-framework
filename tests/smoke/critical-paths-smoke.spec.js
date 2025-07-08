@@ -1,14 +1,14 @@
 const { test, expect } = require('@playwright/test');
-const HomePage = require('../../../src/pages/home/HomePage');
-const GameSessionPage = require('../../../src/pages/game/GameSessionPage');
-const LoginPage = require('../../../src/pages/auth/LoginPage');
-const ProfilePage = require('../../../src/pages/profile/ProfilePage');
-const WordListPage = require('../../../src/pages/vocabulary/WordListPage');
-const CustomVocabPage = require('../../../src/pages/vocabulary/CustomVocabPage');
-const MyWordsPage = require('../../../src/pages/vocabulary/MyWordsPage');
-const GrammarPage = require('../../../src/pages/grammar/GrammarPage');
-const LeaderboardPage = require('../../../src/pages/leaderboard/LeaderboardPage');
-const StaticPage = require('../../../src/pages/static/StaticPage');
+const HomePage = require('../../src/pages/home/HomePage');
+const GameSessionPage = require('../../src/pages/game/GameSessionPage');
+const LoginPage = require('../../src/pages/auth/LoginPage');
+const ProfilePage = require('../../src/pages/profile/ProfilePage');
+const WordListPage = require('../../src/pages/vocabulary/WordListPage');
+const CustomVocabPage = require('../../src/pages/vocabulary/CustomVocabPage');
+const MyWordsPage = require('../../src/pages/vocabulary/MyWordsPage');
+const GrammarPage = require('../../src/pages/grammar/GrammarPage');
+const LeaderboardPage = require('../../src/pages/leaderboard/LeaderboardPage');
+const StaticPage = require('../../src/pages/static/StaticPage');
 
 const SMOKE_USER = {
   username: 'SmokeTest',
@@ -32,9 +32,11 @@ test.describe('Critical Paths Smoke Tests @smoke @critical', () => {
     leaderboardPage = new LeaderboardPage(page);
     staticPage = new StaticPage(page);
 
+    await page.goto('/');
+  
     await page.evaluate(() => {
-      localStorage.clear();
-      sessionStorage.clear();
+        localStorage.clear();
+        sessionStorage.clear();
     });
   });
 
