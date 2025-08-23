@@ -22,6 +22,7 @@
       "test:regression": "npx playwright test --grep @regression",
       "test:parallel": "npx playwright test --workers=4",
       "test:report": "npx playwright show-report",
+      "show-report": "playwright show-report",
       "test:allure": "npx allure generate allure-results",
       "test:allure:open": "npx allure generate allure-results && npx allure open allure-report",
       "test:allure:serve": "npx allure serve allure-results",
@@ -37,7 +38,7 @@
       "setup": "npm install && npm run install:browsers",
       "clean": "rm -rf test-results/ reports/ allure-results/ allure-report/",
       "precommit": "npm run lint && npm run format:check",
-      "performance:analyze": "node scripts/performance-analyzer.js",
+      "performance:analyze": "node scripts/performance-analysis.js",
       "security:scan": "node scripts/security-scanner.js",
       "test:smoke": "npx playwright test --config=configs/smoke.config.js",
       "test:smoke:headed": "npx playwright test --config=configs/smoke.config.js --headed",
@@ -101,7 +102,8 @@
       "eslint": "^8.50.0",
       "prettier": "^3.0.3",
       "husky": "^8.0.3",
-      "lint-staged": "^15.0.2"
+      "lint-staged": "^15.0.2",
+      "cross-env": "^7.0.3"
     },
     "dependencies": {
       "faker": "^5.5.3",
