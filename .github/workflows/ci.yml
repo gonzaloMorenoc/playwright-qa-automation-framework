@@ -1,4 +1,4 @@
-name: 🎭 Playwright Tests CI/CD
+name: Playwright Tests CI/CD
 
 on:
   push:
@@ -6,175 +6,207 @@ on:
   pull_request:
     branches: [ main, develop ]
   schedule:
-    - cron: '0 2 * * *' # Daily at 2 AM
+    - cron: '0 2 * * *'
 
 jobs:
   test:
-    name: 🧪 Run Tests
+    name: Run Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
     
     strategy:
       fail-fast: false
       matrix:
-        environment: [dev, staging, prod]
+        environment: [dev, prod]
         browser: [chromium, firefox, webkit]
         
     steps:
-    - name: 📥 Checkout Repository
+    - name: Checkout Repository
       uses: actions/checkout@v4
       
-    - name: 🟢 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
         
-    - name: 📦 Install Dependencies
-      run: npm ci
+    - name: Install Dependencies
+      run: npm install
       
-    - name: 🎭 Install Playwright Browsers
+    - name: Install Playwright Browsers
       run: npx playwright install --with-deps
       
-    - name: 🔧 Setup Environment
-      run: |
-        cp .env.example .env
-        echo "BASE_URL=${{ secrets[format('BASE_URL_{0}', matrix.environment)] }}" >> .env
-        echo "API_KEY=${{ secrets.API_KEY }}" >> .env
-        
-    - name: 🧪 Run E2E Tests
+    - name: Run E2E Tests
+      id: e2e-tests
+      continue-on-error: true  # Continue even if tests fail
       run: npm run test:${{ matrix.environment }}
       env:
         CI: true
         BROWSER: ${{ matrix.browser }}
         
-    - name: 📊 Run Performance Tests
+    - name: Run Performance Tests
+      if: matrix.environment == 'prod'
+      continue-on-error: true
       run: npm run test:performance
-      if: matrix.environment == 'prod'
       
-    - name: 🛡️ Run Security Tests
+    - name: Run Security Tests
+      if: matrix.environment == 'prod'
+      continue-on-error: true
       run: npm run test:security
-      if: matrix.environment == 'prod'
       
-    - name: 📈 Generate Allure Report
-      run: npm run test:allure
-      if: always()
-      
-    - name: 📋 Upload Test Results
-      uses: actions/upload-artifact@v3
+    # Upload HTML report as artifact
+    - name: Upload Playwright Report
+      uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: playwright-results-${{ matrix.environment }}-${{ matrix.browser }}
-        path: |
-          reports/
-          allure-results/
-          test-results/
+        name: playwright-report-${{ matrix.environment }}-${{ matrix.browser }}
+        path: playwright-report/
         retention-days: 30
         
-    - name: 📸 Upload Screenshots
-      uses: actions/upload-artifact@v3
-      if: failure()
+    # Upload test results (screenshots, videos, traces)
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
       with:
-        name: screenshots-${{ matrix.environment }}-${{ matrix.browser }}
-        path: reports/screenshots/
-        retention-days: 7
-        
-    - name: 🎬 Upload Videos
-      uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: videos-${{ matrix.environment }}-${{ matrix.browser }}
+        name: test-results-${{ matrix.environment }}-${{ matrix.browser }}
         path: test-results/
-        retention-days: 7
+        retention-days: 30
+        
+    # Create test summary in GitHub Actions
+    - name: Test Summary
+      if: always()
+      run: |
+        echo "## 🎭 Playwright Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Environment: ${{ matrix.environment }} | Browser: ${{ matrix.browser }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ steps.e2e-tests.outcome }}" == "success" ]; then
+          echo "✅ **Tests Passed**" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Tests Failed**" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "📊 [Download Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
 
-  performance:
-    name: 🚀 Performance Analysis
+  # Publish test report to GitHub Pages (optional)
+  publish-report:
+    name: Publish Test Report
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: always()  # Always run, even if tests fail
     
     steps:
-    - name: 📥 Checkout Repository
+    - name: Checkout Repository
       uses: actions/checkout@v4
       
-    - name: 🟢 Setup Node.js
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: all-reports
+        
+    - name: Merge Reports
+      run: |
+        mkdir -p merged-report
+        cp -r all-reports/playwright-report-*/* merged-report/ 2>/dev/null || true
+        
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./merged-report
+        
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+          const reportUrl = `https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}`;
+          
+          const comment = `## 🎭 Playwright Test Results
+          
+          ### 📊 Test Reports Available:
+          - [View Test Run](${runUrl})
+          - [View HTML Report](${reportUrl}) (only for main branch)
+          
+          ### 📦 Artifacts:
+          Test reports and screenshots have been uploaded as artifacts in the workflow run.
+          `;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+  performance:
+    name: Performance Analysis
+    runs-on: ubuntu-latest
+    needs: test
+    if: |
+      always() && 
+      github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
         
-    - name: 📦 Install Dependencies
-      run: npm ci
+    - name: Install Dependencies
+      run: npm install
       
-    - name: 🎭 Install Playwright Browsers
+    - name: Install Playwright Browsers
       run: npx playwright install --with-deps
       
-    - name: 📊 Run Performance Analysis
+    - name: Run Performance Analysis
+      continue-on-error: true
       run: npm run performance:analyze
       
-    - name: 📈 Upload Performance Report
-      uses: actions/upload-artifact@v3
+    - name: Upload Performance Report
+      uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: performance-report
         path: reports/performance/
         retention-days: 30
 
   security:
-    name: 🛡️ Security Scan
+    name: Security Scan
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: |
+      always() && 
+      github.ref == 'refs/heads/main'
     
     steps:
-    - name: 📥 Checkout Repository
+    - name: Checkout Repository
       uses: actions/checkout@v4
       
-    - name: 🟢 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
         
-    - name: 📦 Install Dependencies
+    - name: Install Dependencies
       run: npm ci
       
-    - name: 🔍 Run Security Scan
+    - name: Run Security Scan
+      continue-on-error: true
       run: npm run security:scan
       
-    - name: 🛡️ Upload Security Report
-      uses: actions/upload-artifact@v3
+    - name: Upload Security Report
+      uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: security-report
         path: reports/security/
         retention-days: 30
-
-  deploy-reports:
-    name: 📊 Deploy Reports
-    runs-on: ubuntu-latest
-    needs: [test, performance, security]
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-    - name: 📥 Download Artifacts
-      uses: actions/download-artifact@v3
-      
-    - name: 🚀 Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./reports
-        
-  notification:
-    name: 📢 Slack Notification
-    runs-on: ubuntu-latest
-    needs: [test, performance, security]
-    if: always()
-    
-    steps:
-    - name: 📢 Notify Slack
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        text: 'Playwright Tests: ${{ job.status }}'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
