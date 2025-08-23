@@ -22,7 +22,9 @@
       "test:regression": "npx playwright test --grep @regression",
       "test:parallel": "npx playwright test --workers=4",
       "test:report": "npx playwright show-report",
-      "test:allure": "allure generate allure-results --clean && allure open",
+      "test:allure": "npx allure generate allure-results --clean",
+      "test:allure:open": "npx allure generate allure-results --clean && npx allure open",
+      "test:allure:serve": "npx allure serve allure-results",
       "test:trace": "npx playwright show-trace",
       "install:browsers": "npx playwright install",
       "install:deps": "npx playwright install-deps",
@@ -59,9 +61,8 @@
       "test:game-session:scenarios": "npx playwright test tests/e2e/game/game-session-scenarios.spec.js",
       "test:game-session:main": "npx playwright test tests/e2e/game/game-session.spec.js",
       "test:upload-vocabulary": "npx playwright test tests/e2e/vocabulary/upload-vocabulary.spec.js --config=configs/environments/test.config.js",
-      "test:upload-vocabulary:headed": "...",
-      "test:upload-vocabulary:debug": "..."
-
+      "test:upload-vocabulary:headed": "npx playwright test tests/e2e/vocabulary/upload-vocabulary.spec.js --config=configs/environments/test.config.js --headed",
+      "test:upload-vocabulary:debug": "npx playwright test tests/e2e/vocabulary/upload-vocabulary.spec.js --config=configs/environments/test.config.js --debug"
     },
     "keywords": [
       "playwright",
@@ -80,14 +81,13 @@
       "docker"
     ],
     "author": {
-      "name": "Your Name",
-      "email": "your.email@example.com",
-      "url": "https://your-portfolio.com"
+      "name": "Gonzalo Moreno Cominero",
+      "email": "gonzalomorenocominero@gmail.com"
     },
     "license": "MIT",
     "repository": {
       "type": "git",
-      "url": "https://github.com/yourusername/playwright-qa-automation-framework"
+      "url": "https://github.com/gonzaloMorenoc/playwright-qa-automation-framework"
     },
     "engines": {
       "node": ">=16.0.0",
@@ -97,6 +97,7 @@
       "@playwright/test": "^1.40.0",
       "dotenv": "^16.3.1",
       "allure-playwright": "^2.10.0",
+      "allure-commandline": "^2.25.0",
       "eslint": "^8.50.0",
       "prettier": "^3.0.3",
       "husky": "^8.0.3",
@@ -121,4 +122,4 @@
     "lint-staged": {
       "*.js": ["eslint --fix", "prettier --write"]
     }
-  }
+}
