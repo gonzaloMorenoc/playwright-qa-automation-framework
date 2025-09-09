@@ -154,13 +154,6 @@ Framework Architecture
 - ✅ **Fallback Strategies**: Multiple selector options
 - ✅ **Detailed Logging**: Comprehensive error reporting
 
-## 📚 Documentation
-
-- [Architecture Guide](docs/ARCHITECTURE.md)
-- [API Testing Guide](docs/API_TESTING.md)
-- [Performance Testing](docs/PERFORMANCE_TESTING.md)
-- [Best Practices](docs/BEST_PRACTICES.md)
-- [Contributing Guidelines](docs/CONTRIBUTING.md)
 
 ## 🌟 Professional Features
 
@@ -190,7 +183,3 @@ Framework Architecture
 - **APIs**: REST, GraphQL, SOAP
 - **Cloud**: AWS, Azure, GCP
 - **Monitoring**: Grafana, DataDog, New Relic
-
----
-
-*Built with ❤️ by a passionate QA automation engineer*

@@ -8,6 +8,13 @@ on:
   schedule:
     - cron: '0 2 * * *'  # Daily at 2 AM - only smoke tests
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  pages: write
+  id-token: write
+
 jobs:
   test:
     name: Run Tests
