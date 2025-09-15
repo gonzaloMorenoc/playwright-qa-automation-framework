@@ -1,185 +1,90 @@
-# 🎭 Playwright QA Automation Framework
+# Playwright Automation - OrangeHRM
 
-[![Tests](https://github.com/gonzaloMorenoc/playwright-qa-automation-framework/actions/workflows/ci.yml/badge.svg)](https://github.com/gonzaloMorenoc/playwright-qa-automation-framework/actions/workflows/ci.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=playwright-qa-automation-framework&metric=alert_status)](https://sonarcloud.io/dashboard?id=playwright-qa-automation-framework)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Playwright](https://img.shields.io/badge/Playwright-45ba4b?style=flat&logo=playwright&logoColor=white)](https://playwright.dev/)
+Automated testing project for the OrangeHRM demo application using Playwright and the Page Object Model pattern.
 
-> **Professional End-to-End Testing Framework built with Playwright**  
-> Enterprise-grade QA automation showcasing advanced testing practices, scalable architecture, and comprehensive reporting.
+## What's included
 
-## 🏆 Framework Highlights
+- Page Object Model architecture for maintainable tests
+- Multi-environment support (production/preproduction) 
+- Cross-browser testing (Chrome, Firefox, Safari)
+- GitHub Actions CI/CD pipeline
+- HTML, JSON, and JUnit reporting
+- Custom test fixtures and utilities
 
-- **🏗️ Advanced Architecture**: Scalable Page Object Model with component-based design
-- **🔄 Multi-Environment Support**: Seamless testing across Dev, Staging, and Production
-- **📊 Comprehensive Testing**: E2E, API, Performance, Security, and Visual testing
-- **📈 Enterprise Reporting**: Multiple report formats with detailed analytics
-- **🚀 CI/CD Integration**: Production-ready pipeline configurations
-- **🐳 Containerization**: Docker support for consistent environments
-- **🛡️ Quality Gates**: ESLint, Prettier, and pre-commit hooks
+## Getting started
 
-## 🚀 Quick Start
+**Prerequisites:** Node.js 16+ and npm
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/playwright-qa-automation-framework.git
+# Clone and install
+git clone <repository-url>
+cd playwright-automation-project
+npm install
 
-# Install dependencies and setup
-npm run setup
-
-# Run tests
-npm run test:dev
+# Install browsers
+npx playwright install
 ```
 
-## 📊 Test Execution Examples
+## Project structure
 
-### Cross-Browser Testing
+```
+src/
+├── pages/           # Page Object Models
+├── utils/           # Configuration and test data
+└── fixtures/        # Test setup helpers
+tests/               # Test specifications
+.github/workflows/   # CI/CD configuration
+```
+
+## Running tests
+
 ```bash
-# Run on all browsers
-npm test
+# Basic commands
+npm test                    # Run all tests
+npm run test:headed         # Run with browser UI
+npm run test:debug          # Debug mode
+npm run report             # View test results
 
-# Specific browser testing
-npm run test:chromium
-npm run test:firefox
-npm run test:webkit
+# Environment specific
+npm run test:production     # Production environment
+npm run test:preproduction  # Preproduction environment
+
+# Test specific areas
+npm run test:login:production
 ```
 
-### Test Categories
-```bash
-# End-to-End Tests
-npm run test:e2e
+## Configuration
 
-# API Testing
-npm run test:api
+The project uses environment files for different setups:
 
-# Performance Testing
-npm run test:performance
+**Production** (`.env.production`):
+- URL: https://opensource-demo.orangehrmlive.com
+- Credentials: Admin/admin123
 
-# Security Testing
-npm run test:security
+**Preproduction** (`.env.preproduction`):
+- Configure your own environment settings
 
-# Visual Regression Testing
-npm run test:visual
-```
+## How it works
 
-### Environment-Specific Testing
-```bash
-# Development environment
-npm run test:dev
+### Page Objects
+Each page has its own class with methods for interacting with elements. For example, `LoginPage.js` handles all login-related actions.
 
-# Staging environment
-npm run test:staging
+### Test Data
+Centralized in `src/utils/testData.js` - all test credentials, URLs, and expected messages are defined here.
 
-# Production environment
-npm run test:prod
-```
+### Fixtures
+Custom setup in `src/fixtures/testFixtures.js`:
+- `loginPage` - automatically navigates to login
+- `authenticatedPage` - logs in and provides authenticated state
 
-## 🔧 Advanced Features
+### CI/CD
+GitHub Actions runs tests on every push and pull request, plus daily scheduled runs. Results are published to GitHub Pages.
 
-### 1. Smart Test Data Management
-```javascript
-// Dynamic test data generation
-const user = UserFactory.createValidUser();
-const product = ProductFactory.createFeaturedProduct();
-```
+## Reports
 
-### 2. Robust Error Handling
-```javascript
-// Automatic retries and fallback strategies
-await page.waitForSelector(selector, { 
-  timeout: 30000,
-  retries: 3 
-});
-```
+Three types of reports are generated:
+- **HTML**: Visual results with screenshots and videos
+- **JSON**: Machine-readable data
+- **JUnit**: For CI/CD integration
 
-### 3. Performance Monitoring
-```javascript
-// Page load performance tracking
-const metrics = await PerformanceHelper.getPageMetrics(page);
-expect(metrics.loadTime).toBeLessThan(3000);
-```
-
-### 4. Security Testing Integration
-```javascript
-// Authentication and authorization validation
-await SecurityHelper.validateJWTToken(token);
-await SecurityHelper.checkXSSVulnerabilities(page);
-```
-
-## 📈 Reporting & Analytics
-
-### Multiple Report Formats
-- **HTML Reports**: Rich interactive reports with screenshots
-- **Allure Reports**: Detailed test execution analytics
-- **JSON Reports**: Programmatic result processing
-- **Performance Reports**: Load time and resource usage metrics
-
-### CI/CD Integration
-```yaml
-# Automated testing on every push
-- name: Run E2E Tests
-  run: npm run test:e2e
-  
-- name: Generate Reports  
-  run: npm run test:allure
-```
-
-## 🏗️ Architecture Overview
-
-```
-Framework Architecture
-├── 📁 Page Objects (Maintainable UI interactions)
-├── 🧪 Test Fixtures (Reusable test setup)
-├── 🔧 Utilities (Common operations)
-├── 📊 Data Factories (Dynamic test data)
-├── 🛡️ Security Helpers (Security validations)
-├── 📈 Performance Helpers (Performance monitoring)
-└── 📋 Reporting (Multi-format reports)
-```
-
-## 🎯 Best Practices Implemented
-
-### Code Quality
-- ✅ **ESLint & Prettier**: Consistent code formatting
-- ✅ **Husky Hooks**: Pre-commit quality checks
-- ✅ **Type Safety**: JSDoc annotations for better IDE support
-
-### Test Design
-- ✅ **Page Object Model**: Maintainable test code
-- ✅ **Data-Driven Testing**: Parameterized test execution
-- ✅ **Parallel Execution**: Optimized test runtime
-
-### Error Handling
-- ✅ **Smart Retries**: Automatic retry mechanisms
-- ✅ **Fallback Strategies**: Multiple selector options
-- ✅ **Detailed Logging**: Comprehensive error reporting
-
-
-## 🌟 Professional Features
-
-### Enterprise-Ready
-- Multi-environment configuration management
-- Database integration for test data management
-- Email testing capabilities
-- File upload/download testing
-- Third-party API integration testing
-
-### Scalable Design
-- Component-based page object architecture
-- Modular test fixtures and utilities
-- Configurable test data factories
-- Extensible reporting system
-
-### Quality Assurance
-- Automated code quality checks
-- Security vulnerability scanning
-- Performance benchmarking
-- Visual regression detection
-
-## 🔗 Integration Capabilities
-
-- **CI/CD**: GitHub Actions, Jenkins, Azure DevOps
-- **Databases**: MySQL, PostgreSQL, MongoDB
-- **APIs**: REST, GraphQL, SOAP
-- **Cloud**: AWS, Azure, GCP
-- **Monitoring**: Grafana, DataDog, New Relic
+The project follows standard Playwright patterns with clean separation between page logic and test logic.
